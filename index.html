@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>video futura</title>
+  </head>
+  <body>
+    <h1>Solo subida</h1>
+    <!-- by env -->
+    <input type="file" accept="video/*" capture="user" />
+    <input type="file" accept="video/*" capture="environment" />
+    <h1>Suvida + ver</h1>
+    <!-- Thogeter -->
+    <input type="file" accept="video/*" capture="camera" id="recorder" />
+    <video id="player" controls></video>
+    <script>
+      var recorder = document.getElementById("recorder");
+      var player = document.getElementById("player");
+
+      recorder.addEventListener("change", function (e) {
+        var file = e.target.files[0];
+        // Do something with the video file.
+        player.src = URL.createObjectURL(file);
+      });
+    </script>
+
+    <h1>Grabar y ver</h1>
+    <!-- Grabar con camara -->
+    <video id="recording-see" autoplay></video>
+    <script>
+      var player = document.getElementById("recording-see");
+      var handleSuccess = function (stream) {
+        player.srcObject = stream;
+        player.play();
+      };
+
+      navigator.mediaDevices
+        .getUserMedia({ audio: true, video: true })
+        .then(handleSuccess);
+
+      navigator.permissions.query({ name: "camera" }).then(function (result) {
+        if (result.state == "granted") {
+        } else if (result.state == "prompt") {
+        } else if (result.state == "denied") {
+        }
+        result.onchange = function () {};
+      });
+    </script>
+
+    <h1>Capturar en canvasc</h1>
+    <!-- Capturar en canvas -->
+    <video id="video" width="640" height="480" autoplay></video>
+    <button id="snap">Snap Photo</button>
+    <canvas id="canvas" width="640" height="480"></canvas>
+    <script>
+      // Elements for taking the snapshot
+      var canvas = document.getElementById("canvas");
+      var context = canvas.getContext("2d");
+      var video = document.getElementById("recording-see");
+
+      // Trigger photo take
+      document.getElementById("snap").addEventListener("click", function () {
+        context.drawImage(video, 0, 0, 640, 480);
+      });
+    </script>
+  </body>
+</html>
